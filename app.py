@@ -22,14 +22,23 @@ def respond():
         text = update.message.text.encode('utf-8').decode().lower()
 
         try:
-            response_message = requests.post(
+            if text == "help":
+                help_text = ("You can use the following commands:"
+                             "\n     {nickname | isbn} start"
+                             "\n     {nickname | isbn} end"
+                             "\n     {nickname | isbn} abandon"
+                             "\n     {nickname} {isbn}")
+                bot.sendMessage(chat_id=chat_id, text=help_text)
+
+            else:
+                response_message = requests.post(
                     'http://shelvd.katmatfield.com/webhook',
                     data={
                         'From': int(os.environ['RECIPIENT_NUMBER']),
                         'Text': text
                     }).text
-            bot.sendMessage(chat_id=chat_id, text=response_message,
-                            reply_to_message_id=msg_id)
+                bot.sendMessage(chat_id=chat_id, text=response_message,
+                                reply_to_message_id=msg_id)
 
         except Exception:
             bot.sendMessage(chat_id=chat_id,
